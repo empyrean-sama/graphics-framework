@@ -53,6 +53,28 @@ export default class SandboxGame extends Game {
                     break;
             }
         });
+
+        let dragStartPos: Vec2 | null = null;
+        let isDragging = false;
+        const leftMouseButton = 0;
+        window.addEventListener('mousedown', (event: MouseEvent) => {
+            if(event.button === leftMouseButton) { 
+                isDragging = true;
+                dragStartPos = new Vec2(event.clientX, event.clientY);
+            }
+        });
+        window.addEventListener('mouseup', (event: MouseEvent) => {
+            if(event.button === leftMouseButton) {
+                isDragging = false;
+            }
+        });
+        window.addEventListener('mousemove', (event: MouseEvent) => {
+            if(isDragging && dragStartPos) {
+                let delta = dragStartPos.subtract(new Vec2(event.clientX, event.clientY));
+                dragStartPos = new Vec2(event.clientX, event.clientY);
+                this._camera.moveCamera(new Vec2(delta.x, -1 * delta.y));
+            }
+        });
     }
 
     public updateFrame(dt: number): void {
